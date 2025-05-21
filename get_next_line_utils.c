@@ -6,11 +6,23 @@
 /*   By: tlorette <tlorette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:13:15 by tlorette          #+#    #+#             */
-/*   Updated: 2025/05/14 11:02:58 by tlorette         ###   ########.fr       */
+/*   Updated: 2025/05/21 14:10:01 by tlorette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+size_t	ft_strlen(char const *str)
+{
+	size_t	i;
+
+	i = 0;
+	if (!str)
+		return (0);
+	while (str[i])
+		i++;
+	return (i);
+}
 
 void	ft_bzero(void *s, size_t n)
 {
@@ -41,6 +53,8 @@ char	*ft_strchr(const char *s, int c)
 	int	i;
 
 	i = 0;
+	if (!s)
+		return (NULL);
 	while (s[i])
 	{
 		if (s[i] == (char)c)
@@ -49,31 +63,38 @@ char	*ft_strchr(const char *s, int c)
 	}
 	if ((char)c == '\0')
 		return ((char *)(s + i));
-	else
-		return (NULL);
+	return (NULL);
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	int		i;
 	int		j;
-	int		len_s1;
-	int		len_s2;
+	size_t	len_s1;
+	size_t	len_s2;
 	char	*str;
 
-	i = 0;
-	j = 0;
-	len_s1 = ft_strlen((char *)s1);
-	len_s2 = ft_strlen((char *)s2);
-	str = malloc(sizeof(char) * ((len_s1 + len_s2) + 1));
+	if (!s1 && !s2)
+		return (NULL);
+	if (s1)
+		len_s1 = ft_strlen(s1);
+	else
+		len_s1 = 0;
+	if (s2)
+		len_s2 = ft_strlen(s2);
+	else
+		len_s2 = 0;
+	str = malloc((len_s1 + len_s2) + 1);
 	if (!str)
 		return (NULL);
-	while (s1[i])
+	i = 0;
+	while (s1 && s1[i])
 	{
 		str[i] = s1[i];
 		i++;
 	}
-	while (s2[j])
+	j = 0;
+	while (s2 && s2[j])
 	{
 		str[i + j] = s2[j];
 		j++;
@@ -82,13 +103,4 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (str);
 }
 
-int	ft_strlen(char const *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
-}
 
