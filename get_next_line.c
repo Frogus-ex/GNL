@@ -6,7 +6,7 @@
 /*   By: tlorette <tlorette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 16:52:31 by tlorette          #+#    #+#             */
-/*   Updated: 2025/05/21 14:22:18 by tlorette         ###   ########.fr       */
+/*   Updated: 2025/05/21 16:43:55 by tlorette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,8 @@ static char	*store_line(char *stash)
 
 static char	*read_line(int fd, char *stash)
 {
-	int		bytes_read;
+	ssize_t	bytes_read;
 	char	*buffer;
-	char	*tmp;
 
 	buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	if (!buffer)
@@ -91,9 +90,7 @@ static char	*read_line(int fd, char *stash)
 		if (bytes_read < 0)
 			return (free(buffer), free(stash), NULL);
 		buffer[bytes_read] = '\0';
-		tmp = stash;
-		stash = ft_strjoin(tmp, buffer);
-		free(tmp);
+		stash = ft_strjoin(stash, buffer, bytes_read);
 		if (!stash)
 			return (free(buffer), NULL);
 	}
@@ -107,7 +104,7 @@ char	*get_next_line(int fd)
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
-		return (NULL);
+		return (free(stash), stash = NULL, NULL);
 	stash = read_line(fd, stash);
 	if (!stash)
 		return (NULL);

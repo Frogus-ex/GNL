@@ -1,28 +1,26 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tlorette <tlorette@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/16 15:18:22 by tlorette          #+#    #+#             */
-/*   Updated: 2025/05/21 13:40:21 by tlorette         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <fcntl.h>
+#include <stdio.h>
 #include "get_next_line.h"
 
-int	main(int ac, char **av)
+int	main(int argc, char **argv)
 {
 	int		fd;
 	char	*line;
 
-	(void)ac;
-	fd = open(av[1], O_RDONLY);
-	// line = get_next_line(fd);
-	while ((line = get_next_line(fd)))
+	if (argc != 2)
+	{
+		write(2, "Usage: ./a.out <file>\n", 22);
+		return (1);
+	}
+	fd = open(argv[1], O_RDONLY);
+	if (fd < 0)
+	{
+		perror("open");
+		return (1);
+	}
+	while ((line = get_next_line(fd)) != NULL)
 	{
 		printf("%s", line);
 		free(line);

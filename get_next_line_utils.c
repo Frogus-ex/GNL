@@ -6,7 +6,7 @@
 /*   By: tlorette <tlorette@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:13:15 by tlorette          #+#    #+#             */
-/*   Updated: 2025/05/21 14:10:01 by tlorette         ###   ########.fr       */
+/*   Updated: 2025/05/21 16:58:03 by tlorette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,33 +24,47 @@ size_t	ft_strlen(char const *str)
 	return (i);
 }
 
-void	ft_bzero(void *s, size_t n)
+void	*ft_calloc(size_t count, size_t size)
 {
+	void	*p;
 	char	*str;
+	size_t	total_size;
 
-	str = (char *)s;
-	while (n > 0)
+	total_size = count * size;
+	if (size && count > 18446744073709551615UL / size)
+		return (NULL);
+	p = malloc(total_size);
+	if (!p)
+		return (NULL);
+	str = (char *)p;
+	while (total_size > 0)
 	{
 		*str = 0;
 		str++;
-		n--;
+		total_size--;
 	}
+	return (p);
 }
 
-void	*ft_calloc(size_t nmemb, size_t size)
+static void	*gnl_memcpy(char *dst, char *src, size_t n)
 {
-	void	*ptr;
+	size_t	i;
 
-	ptr = malloc((size) * (nmemb));
-	if (!ptr)
+	i = 0;
+	if (dst == NULL && src == NULL)
 		return (NULL);
-	ft_bzero(ptr, (size * nmemb));
-	return (ptr);
+	while (n > 0)
+	{
+		dst[i] = src[i];
+		i++;
+		n--;
+	}
+	return (dst);
 }
 
 char	*ft_strchr(const char *s, int c)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
 	if (!s)
@@ -66,41 +80,27 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *stash, char *buf, size_t n)
 {
-	int		i;
-	int		j;
-	size_t	len_s1;
-	size_t	len_s2;
-	char	*str;
+	char	*r;
+	size_t	len_stash;
 
-	if (!s1 && !s2)
-		return (NULL);
-	if (s1)
-		len_s1 = ft_strlen(s1);
+	if (!stash)
+		len_stash = 0;
 	else
-		len_s1 = 0;
-	if (s2)
-		len_s2 = ft_strlen(s2);
-	else
-		len_s2 = 0;
-	str = malloc((len_s1 + len_s2) + 1);
-	if (!str)
+		len_stash = ft_strlen(stash);
+	r = (char *) malloc ((len_stash + n + 1));
+	if (!r)
+	{
+		free(stash);
 		return (NULL);
-	i = 0;
-	while (s1 && s1[i])
-	{
-		str[i] = s1[i];
-		i++;
 	}
-	j = 0;
-	while (s2 && s2[j])
+	if (stash)
 	{
-		str[i + j] = s2[j];
-		j++;
+		gnl_memcpy(r, stash, len_stash);
+		free(stash);
 	}
-	str[i + j] = '\0';
-	return (str);
+	gnl_memcpy(r + len_stash, buf, n);
+	r[len_stash + n] = '\0';
+	return (r);
 }
-
-
